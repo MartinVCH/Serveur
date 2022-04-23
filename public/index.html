@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="courriel.css">
+		<script src="forge.min.js"> </script>
+		<title>Mirage</title>
+	</head>
+	<body >
+		<div class="box-top">
+			<div class="design-titre">
+				MIRAGE
+			</div>
+		</div>
+		<div class="box-under">
+			<button onclick="goToNewMessage()"  class="b1">New message</button>
+			<button class="b3">Mark all as read</button>
+		</div>
+		<!-- NEW EMAIL FORM-->    
+		<form id="box">
+			<div class="emailbox">
+				<div>
+					<button id="Envoie" class="b4">To</button>
+					<input type="email", id="emailAddress", required placeholder="username@mirage.com", multiple>
+				</div>
+				<!-- <div>
+					<button id="envoie" class="b5">From</button>
+					<input type="email", id="emailAddress2", required placeholder="username@example.com", multiple>
+				</div> -->
+				<div>
+					<input 
+						type="text",
+						id="subject",
+						name="Subject",
+						placeholder="Add a subject">
+				</div>
+				<div>
+					<textarea class="message", id="message", rows="30", cols="99"></textarea>
+				</div>
+				<div>
+					<button id = "sendButton", class="envoyer",  onclick = "JavaScript: sendEmail()">Send</button>
+				</div>
+			</div>
+		</form>
+		<!--- NEW ADDRESS FORM : Form to add a new address to the addressbook --->        
+		<form id="newAddressForm", onsubmit="(function f(){return false})()">
+			<div>
+				<div>
+					<input id="firstName", type = "text", placeholder = "Prénom...">
+				</div>
+				<div>
+					<input id="LastName", type = "text", placeholder = "nom...">
+				</div>
+				<div>
+					<input id="contactEmailAddress", type = "email", placeholder = "name@example...">
+				</div>
+				<div>
+					<button id = "buttonAddContact", class = "envoyer", onclick = "JavaScript: AddressBook.addContact()">Ajouter au Carnet...</button>
+				</div>
+			</div>
+		</form>
+		<!--- Search feature for all sections  --->      
+		<div>
+			<input type= "text", id= "searchstring", name= "search" placeholder = "Search...", oninput= "JavaScript: filterSearch()">
+		</div>
+		<!-- Clear local storage features -->
+		<div>
+			<button id = "clearLocalStorageContacts", class = "deleteContacts", onclick = "JavaScript:clearLocalStorageContacts()">Delete All Contacts</button>
+		</div>
+		<div>
+			<button id = "clearLocalStorageOutbox", class = "deleteOutbox", onclick = "JavaScript:clearLocalStorageOutbox()">Delete All Sent Items</button>
+		</div>
+		<!--- Inbox related divs  --->    
+		<div>
+			<div>
+				<table 
+				id =    "inboxTable", 
+				class = "boxes", 
+				align = "left"
+				>
+				<thead>
+					<tr>
+						<th>From</th>
+						<th>Subject</th>
+						<th>Content</th>
+						<th>Date</th>
+					</tr>
+				</thead>
+				<tbody id = "inboxContents"></tbody>
+				<!--- this content is added via Javascripts, (dynamic)-->
+				</table>
+			</div>
+			<!--- Sent items related divs  --->    
+			<div>
+				<table 
+				id =    "outboxTable",
+				class = "boxes", 
+				align = "left"
+				>
+				<thead>
+					<tr>
+						<th>To</th>
+						<th>From</th>
+						<th>Subject</th>
+						<th>Content</th>
+					</tr>
+				</thead>
+				<tbody id = "outboxContents"></tbody>
+				<!--- this content is added via Javascripts, (dynamic)-->
+				</table>
+			</div>
+			<!--- CONTACT LIST related divs  --->
+			<div>
+				<table 
+				id =    "contactTable",
+				class = "boxes", 
+				align = "left"
+				>
+				<thead>
+					<tr>
+						<th>Prénom</th>
+						<th>Nom</th>
+						<th>Addresse Courriel</th>
+					</tr>
+				</thead>
+				<tbody id = "contactListContents"></tbody>
+				<!--- this content is added via Javascripts, (dynamic)-->
+				</table>
+			</div>
+		</div>
+		<!--- SIDE NAVIGATION BUTTONS AND DROP DOWN MENUS  --->    
+		<div id="Button" class="sidenav">
+			<button class="dropdown-btn">Favorites</button>
+			<div class="container">
+				<button 
+					class="b2",
+					onclick = "JavaScript: goToInbox()"
+					>
+				Inbox</button>
+				<button 
+					class="b2",
+					onclick = "JavaScript: goToContacts()"
+					>Carnet d'Addresses</button>
+				<button 
+				class="b2",
+				id="sentItemsButton",
+				onclick = "JavaScript: goToSentItems()"
+				>
+				Sent Items</button>
+				<button class="b2">Junk Items</button>
+			</div>
+			<button class="dropdown-btn">Folders (in progress)</button>
+			<div class="container">
+				<button class="b2">Inbox</button>
+				<button class="b2">Drafts</button>
+				<button class="b2">Sent Items</button>
+				<button class="b2">Deleted Items</button>
+				<button class="b2">Junk Items</button>
+				<button class="b2">Archive</button>
+				<button class="b2">Notes</button>  
+			</div>
+		</div>
+		<script src="client.js"></script>
+	</body>
+</html>

@@ -1,0 +1,89 @@
+//Define all dom. elements to be used in .js:
+const encryptBtn    = document.getElementById("encrypt");   // the encrypt button
+const decryptBtn    = document.getElementById("decrypt");   // the decrypt button 
+const inputElement  = document.getElementById("msg");       // the input field of type textArea.
+const outputElement = document.getElementById("output");    // the output field of type div.
+
+/**
+ * @function postMessage() is Triggered in dom.
+ * Calls @postRequest() to add the string message to the server. */
+function postMessage(){
+    console.log("Posting a message on the server...");
+    var message = inputElement.value;
+    postRequest(message);    
+}
+/**
+ * @function postRequest()  adds a string message to the server.  
+ * @param message           of type String is added to the server. */
+function postRequest(message){
+
+    try{
+        //decrypts the encrypted message: 
+        encryptedMsg = forge.util.encode64( keyPair.publicKey.encrypt(forge.util.encodeUtf8(message)));
+        //makes a request to add a message to the server: 
+        fetch("/addLetter", {method: "POST", body: encryptedMsg})
+            .then( _ => console.log(`Message envoyé: ${encryptedMsg}`))
+            .catch( err => alert(err));
+    }catch (err){
+        console.log("could not fetch the messages : "+ err);
+    }
+}
+/**
+ * Triggered in dom. 
+ */
+function getMessages(){
+    console.log("Get messages btn pressed..."); 
+    let messages = getRequest();
+}
+/**
+ * 
+ * @returns gets all the messages from the server. 
+ */
+function getRequest(){
+    fetch("/getLetters")
+        .catch(err => alert(err))
+        .then(resp => resp.json())
+        .then(msgs => {
+            //msgs is an object. 
+            msgs.forEach( encryptedMsg => {
+                
+                console.log(encryptedMsg);
+                var decryptedMsg = forge.util.decodeUtf8(keyPair.privateKey.decrypt(forge.util.decode64(encryptedMsg)));
+                console.log(decryptedMsg);
+                outputElement.innerText = decryptedMsg;
+            });
+        });
+}
+/**
+ * @getKeyPair  gets the keypair from local Storage or generates one if none exists. 
+ * @returns     the keypair to be used to interface with server. */
+ function getKeyPair(){
+    var keyPair, pem = localStorage.getItem("pem");
+    //if there is a key in localStorage: 
+    if(pem){
+        console.log("Getting key from localStorage...");
+        privateKey = forge.pki.privateKeyFromPem(pem);
+        publicKey = forge.pki.setRsaPublicKey(privateKey.n, privateKey.e);
+        keyPair = {privateKey, publicKey};
+    }else{
+        console.log("generating a NEW key...");
+        //there is no key in local Storage.
+        //generate a new keypair:
+        keyPair = forge.pki.rsa.generateKeyPair({bits: 1024});
+        //add the new keypair to local Storage: 
+        localStorage.setItem("pem",forge.pki.privateKeyToPem(keyPair.privateKey));
+    }
+    return keyPair;
+}
+/**
+* Program starts below:
+* 
+*/
+(function main(){
+    alert("JavaScript is running!");
+    //let data = JSON.stringify({name: "Steve Griffith"});
+    //Generates a keypair object with RSA protocol.:
+    var keyPair = getKeyPair();
+    console.log("Public Key: \n"+forge.pki.publicKeyToPem(keyPair.publicKey));
+})();
+
